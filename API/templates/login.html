@@ -1,0 +1,58 @@
+<html>
+<body>
+    <h1>Test api</h1>
+    <h2>Select all</h2>
+    <form action="/api/select-all" method="get" target="_blank">
+      <input type="submit" value="envoyer">
+
+    </form>
+    <h2>Select one</h2>
+    <form action="/api/select-one" method="post" target="_blank">
+      <input type="text" name="id" value="" id="input">
+      <input type="submit" value="envoyer"">
+
+    </form>
+    <h2>Insert one</h2>
+    <form action="/api/insert-one" method="post" target="_blank">
+      <label for="id">id:</label>
+      <input type="text" name="id" value="" id="input">
+      <label for="name">name:</label>
+      <input type="text" name="name" value="" id="input">
+      <label for="value">value:</label>
+      <input type="text" name="value" value="" id="input">
+      <input type="submit" value="envoyer"">
+
+    </form>
+    <h2>Update one</h2>
+    <form action="/api/update-one" method="post" target="_blank">
+      <label for="id">id to replace:</label>
+      <input type="text" name="replaceId" value="" id="input">
+      <br><br>
+      <label for="id">id:</label>
+      <input type="text" name="id" value="" id="input">
+      <label for="name">name:</label>
+      <input type="text" name="name" value="" id="input">
+      <label for="value">value:</label>
+      <input type="text" name="value" value="" id="input">
+      <input type="submit" value="envoyer"">
+
+    </form>
+  </form>
+  <h2>Delete one</h2>
+  <form action="/api/delete-one" method="post" target="_blank">
+    <input type="text" name="id" value="" id="input">
+    <input type="submit" value="envoyer"">
+
+  </form>
+    <!-- <p id="p"></p>
+    <script>
+      function test(){
+      var x = document.getElementById("input").value;
+      var elem = document.getElementById("p");
+      elem.innerText = x
+      document.body.appendChild(elem);
+    
+    }
+    </script> -->
+</body>
+</html>

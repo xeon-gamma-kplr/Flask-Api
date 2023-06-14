@@ -1,4 +1,4 @@
-from flask import Flask,request, jsonify
+from flask import Flask,request, jsonify,render_template
 import psycopg2
 import psycopg2.extras
 
@@ -15,6 +15,7 @@ def select_one_id(id):
     cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
     cursor.execute(f"SELECT * FROM data WHERE id = {id}")
     result = cursor.fetchone()
+    return result
 def insert_one(tuple):
     conn= connexion()
     cursor = conn.cursor(cursor_factory = psycopg2.extras.RealDictCursor)
@@ -35,7 +36,8 @@ def update_one(id,tuple):
         cursor.execute(f"UPDATE data SET id = {tuple[0]}, name = '{tuple[1]}', value = '{tuple[2]}' WHERE id = {id} ;")
         result = {"State":"Sucess"}
     except Exception as e:
-       result = {"State":"Echec"}
+        print("except")
+        result = {"State":"Echec"}
     conn.commit()
     cursor.close()
     conn.close()
@@ -47,6 +49,7 @@ def delete_one(id):
         cursor.execute(f"DELETE FROM data WHERE id = {id};")
         result = {"State":"Sucess"}
     except Exception as e:
+        print(e)
         result = {"State":"Echec"}
         
     cursor.close()
@@ -72,33 +75,59 @@ app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET'])
 def home():
+    return render_template("login.html")
 
-    return '''<h1>Test API with PostgreSQL</h1>
-
-<p>Ce site est le prototype d’une API mettant à disposition des données sur les employés d’une entreprise.</p>'''
 
 @app.route('/api/select-all', methods=['GET'])
 def api_select_all():
 
     return jsonify(select_all())
 
-@app.route('/api/select-one/<int:id>', methods=['GET'])
-def api_select_one(id):
+@app.route('/api/insert-one', methods=['GET','POST'])
+def api_insert_one():
+    if request.method == "POST":
+        return jsonify(insert_one((request.form["id"],request.form["name"],request.form["value"])))
+    return render_template("login.html")
 
-    return jsonify(select_one_id(id))
+@app.route('/api/select-one', methods=['GET','POST'])
+def api_select_one():
+    if request.method == "POST":
+        return jsonify(select_one_id(request.form["id"]))
+    return render_template("login.html")
 
-@app.route('/api/insert-one/<insert>', methods=['GET'])
-def api_insert_one(insert):
-    liste = insert[1:-1].split(",")
-    return jsonify(insert_one(liste))
+@app.route('/api/update-one/', methods=['GET','POST'])
+def api_update_one():
+    if request.method == "POST":
+        return jsonify(update_one(request.form["replaceId"],(request.form["id"],request.form["name"],request.form["value"])))
+    return render_template("login.html")
 
-@app.route('/api/update-one/<int:id>/<update>', methods=['GET'])
-def api_update_one(id,update):
-    liste = update[1:-1].split(",")
-    return jsonify(update_one(id,liste))
+@app.route('/api/delete-one', methods=['GET','POST'])
+def api_delete_one():
+    if request.method == "POST":
+        return jsonify(delete_one(request.form["id"]))
+    return render_template("login.html")
+# @app.route('/api/select-all', methods=['GET'])
+# def api_select_all():
 
-@app.route('/api/delete-one/<int:id>', methods=['GET'])
-def api_delete_one(id):
-    return jsonify(delete_one(id))
+#     return jsonify(select_all())
+
+# @app.route('/api/select-one/<int:id>', methods=['GET'])
+# def api_select_one(id):
+
+#     return jsonify(select_one_id(id))
+
+# @app.route('/api/insert-one/<insert>', methods=['GET'])
+# def api_insert_one(insert):
+#     liste = insert[1:-1].split(",")
+#     return jsonify(insert_one(liste))
+
+# @app.route('/api/update-one/<int:id>/<update>', methods=['GET'])
+# def api_update_one(id,update):
+#     liste = update[1:-1].split(",")
+#     return jsonify(update_one(id,liste))
+
+# @app.route('/api/delete-one/<int:id>', methods=['GET'])
+# def api_delete_one(id):
+#     return jsonify(delete_one(id))
 
 app.run()
